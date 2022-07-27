@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
+from pandas.plotting import scatter_matrix
+from sklearn.model_selection import train_test_split
 shop=pd.read_csv('intention.csv')
 shop2=pd.read_csv('intention2.csv')
 
@@ -89,7 +91,11 @@ corr_k["Revenue"].sort_values(ascending=False)
 plt.figure(figsize=(20,10))
 sns.heatmap(corr_s,annot=True,center=1,robust=True)
 
+#Grafica de correlaciones
 
+
+scatter_matrix(shop_numeric, figsize=(14,10))
+plt.show()
 
 #scaling
 
@@ -98,3 +104,11 @@ X = shop_total.drop('Revenue', axis=1)
 scaler = StandardScaler()
 X= scaler.fit_transform(X)
 shop_standar=pd.DataFrame(X)
+
+# DIVIDIR EN ENTRENAR Y TESTEO
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=20)
+
+
+
+
+

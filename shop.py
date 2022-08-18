@@ -5,6 +5,14 @@ import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from pandas.plotting import scatter_matrix
 from sklearn.model_selection import train_test_split
+#algortimos
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LinearRegression
+from sklearn.naive_bayes import GaussianNB
+
+
+
 shop=pd.read_csv('intention.csv')
 shop2=pd.read_csv('intention2.csv')
 
@@ -70,7 +78,7 @@ shop_numeric.info()
 # convertir varible tipo de visitador
 date_numeric=shop_numeric.drop(["VisitorType"], axis=1)
 # cambiamos nombre para poder visaulizar mejor la tabla
-date_numeric=date_numeric.rename(columns={'Administrative_Duration':'A Duration','Informational_Duration':'I Duration','ProductRelated_Duration':'P Duration' })
+#date_numeric=date_numeric.rename(columns={'Administrative_Duration':'A Duration','Informational_Duration':'I Duration','ProductRelated_Duration':'P Duration' })
 date_categorica=shop_numeric.filter(["VisitorType"])
 # vamos a usa la variable dummie
 cat_numerical=pd.get_dummies(date_categorica.iloc[:,0], drop_first=False)
@@ -101,13 +109,26 @@ plt.show()
 
 y = shop_total['Revenue'].copy()
 X = shop_total.drop('Revenue', axis=1)
-scaler = StandardScaler()
-X= scaler.fit_transform(X)
+
 shop_standar=pd.DataFrame(X)
 
 # DIVIDIR EN ENTRENAR Y TESTEO
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=20)
+# scalador 
+scaler = StandardScaler()
+X_train_escalado= scaler.fit_transform(X_train)
 
+# instaciar
+forest_clf = RandomForestClassifier()
+knn_clf = KNeighborsClassifier()
+rl_clf= LinearRegression()
+nv_clf= GaussianNB()
+
+# entrenamiento
+forest_clf.fit(X_train,y_train)
+knn_clf.fit(X_train,y_train)
+rl_clf.fit(X_train,y_train)
+nv_clf.fit(X_train,y_train)
 
 
 

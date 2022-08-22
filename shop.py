@@ -10,8 +10,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LinearRegression
 from sklearn.naive_bayes import GaussianNB
-
-
+#importar matriz de confusion
+from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import cross_val_predict
+from sklearn.metrics import recall_score
 
 shop=pd.read_csv('intention.csv')
 shop2=pd.read_csv('intention2.csv')
@@ -130,6 +132,17 @@ knn_clf.fit(X_train,y_train)
 rl_clf.fit(X_train,y_train)
 nv_clf.fit(X_train,y_train)
 
+#calcular las predicciones de cada modelo
+y_train_prediccion_forest = cross_val_predict(forest_clf, X_train, y_train, cv=5)
+y_train_prediccion_knn = cross_val_predict(forest_clf, X_train, y_train, cv=5)
+y_train_prediccion_rl = cross_val_predict(forest_clf, X_train, y_train, cv=5)
+y_train_prediccion_nv = cross_val_predict(forest_clf, X_train, y_train, cv=5)
 
 
+#calculamos la matriz de confusion para cada modelo
+
+confusion_matrix(y_train, y_train_prediccion_forest)
+u=confusion_matrix(y_train, y_train_prediccion_knn)
+confusion_matrix(y_train, y_train_prediccion_rl)
+confusion_matrix(y_train, y_train_prediccion_nv)
 

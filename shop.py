@@ -142,7 +142,14 @@ y_train_prediccion_nv = cross_val_predict(forest_clf, X_train, y_train, cv=5)
 #calculamos la matriz de confusion para cada modelo
 
 confusion_matrix(y_train, y_train_prediccion_forest)
-u=confusion_matrix(y_train, y_train_prediccion_knn)
+confusion_matrix(y_train, y_train_prediccion_knn)
 confusion_matrix(y_train, y_train_prediccion_rl)
 confusion_matrix(y_train, y_train_prediccion_nv)
+
+recall_score(y_train, y_train_prediccion_forest)
+recall_score(y_train, y_train_prediccion_knn)
+recall_score(y_train, y_train_prediccion_rl)
+recall_score(y_train, y_train_prediccion_nv)
+
+
 

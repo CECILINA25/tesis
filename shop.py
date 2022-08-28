@@ -23,7 +23,7 @@ plt.rc('font', **font)
 
 
 
-
+#hola
 
 
 shop2.isnull().sum()

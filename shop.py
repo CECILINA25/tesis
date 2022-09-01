@@ -8,25 +8,21 @@ from sklearn.model_selection import train_test_split
 #algortimos
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 #importar matriz de confusion
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import recall_score
+from sklearn.model_selection import GridSearchCV
+
 
 shop=pd.read_csv('intention.csv')
-shop2=pd.read_csv('intention2.csv')
+
 
 font = {'size': 12}
 plt.rc('font', **font)
 
-
-
-#hola
-
-
-shop2.isnull().sum()
 # sumammos filas
 shop.isna().sum()
 #sumamos las columnas
@@ -103,7 +99,6 @@ sns.heatmap(corr_s,annot=True,center=1,robust=True)
 
 #Grafica de correlaciones
 
-
 scatter_matrix(shop_numeric, figsize=(14,10))
 plt.show()
 
@@ -112,7 +107,7 @@ plt.show()
 y = shop_total['Revenue'].copy()
 X = shop_total.drop('Revenue', axis=1)
 
-shop_standar=pd.DataFrame(X)
+
 
 # DIVIDIR EN ENTRENAR Y TESTEO
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=20)
@@ -123,33 +118,47 @@ X_train_escalado= scaler.fit_transform(X_train)
 # instaciar
 forest_clf = RandomForestClassifier()
 knn_clf = KNeighborsClassifier()
-rl_clf= LinearRegression()
+lr_clf= LogisticRegression()
 nv_clf= GaussianNB()
 
 # entrenamiento
 forest_clf.fit(X_train,y_train)
 knn_clf.fit(X_train,y_train)
-rl_clf.fit(X_train,y_train)
+lr_clf.fit(X_train,y_train)
 nv_clf.fit(X_train,y_train)
 
 #calcular las predicciones de cada modelo
 y_train_prediccion_forest = cross_val_predict(forest_clf, X_train, y_train, cv=5)
-y_train_prediccion_knn = cross_val_predict(forest_clf, X_train, y_train, cv=5)
-y_train_prediccion_rl = cross_val_predict(forest_clf, X_train, y_train, cv=5)
-y_train_prediccion_nv = cross_val_predict(forest_clf, X_train, y_train, cv=5)
+y_train_prediccion_knn = cross_val_predict(knn_clf, X_train, y_train, cv=5)
+y_train_prediccion_lr = cross_val_predict(lr_clf, X_train, y_train, cv=5)
+y_train_prediccion_nv = cross_val_predict(nv_clf, X_train, y_train, cv=5)
 
 
 #calculamos la matriz de confusion para cada modelo
 
 confusion_matrix(y_train, y_train_prediccion_forest)
 confusion_matrix(y_train, y_train_prediccion_knn)
-confusion_matrix(y_train, y_train_prediccion_rl)
+confusion_matrix(y_train, y_train_prediccion_lr)
 confusion_matrix(y_train, y_train_prediccion_nv)
 
 recall_score(y_train, y_train_prediccion_forest)
+#RESULTADO Out[13]: 0.5613238157040883
 recall_score(y_train, y_train_prediccion_knn)
-recall_score(y_train, y_train_prediccion_rl)
+#RESULTADO 0.5587280986372486
+recall_score(y_train, y_train_prediccion_lr)
+#RESULTADAO0.5619727449707982
 recall_score(y_train, y_train_prediccion_nv)
+#RESULTADO  0.5606748864373783
 
+
+param_grid ={'n_estimators': [1, 10, 100, 1000], 'criterion': ['gini', 'entropy'], 'max_depth':[None,2,5,50,200],'min_samples_split':[0.1,2,3,4]}
+
+cuadricula = GridSearchCV(forest_clf, param_grid, return_train_score=True, scoring='recall', cv=5)
+
+cuadricula.fit(X_train, y_train) 
+cuadricula.best_params_
+cuadricula.best_score_
+
+lr_clf.get_params()
 
 

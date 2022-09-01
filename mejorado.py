@@ -14,6 +14,8 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import recall_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
 
 shop=pd.read_csv('intention.csv')
 
@@ -120,31 +122,42 @@ X_train_escalado= scaler.fit_transform(X_train)
 # instaciar
 forest_clf = RandomForestClassifier()
 knn_clf = KNeighborsClassifier()
-rl_clf= LinearRegression()
+lr_clf= LogisticRegression()
 nv_clf= GaussianNB()
 
 # entrenamiento
 forest_clf.fit(X_train,y_train)
 knn_clf.fit(X_train,y_train)
-rl_clf.fit(X_train,y_train)
+lr_clf.fit(X_train,y_train)
 nv_clf.fit(X_train,y_train)
 
 #calcular las predicciones de cada modelo
 y_train_prediccion_forest = cross_val_predict(forest_clf, X_train, y_train, cv=5)
-y_train_prediccion_knn = cross_val_predict(forest_clf, X_train, y_train, cv=5)
-y_train_prediccion_rl = cross_val_predict(forest_clf, X_train, y_train, cv=5)
-y_train_prediccion_nv = cross_val_predict(forest_clf, X_train, y_train, cv=5)
+y_train_prediccion_knn = cross_val_predict(knn_clf, X_train, y_train, cv=5)
+y_train_prediccion_lr = cross_val_predict(lr_clf, X_train, y_train, cv=5)
+y_train_prediccion_nv = cross_val_predict(nv_clf, X_train, y_train, cv=5)
 
 
 recall_score(y_train, y_train_prediccion_forest)
-#0.5515898767034393
+#0. 0.5412070084360805
 recall_score(y_train, y_train_prediccion_knn)
-#0.536664503569111
-recall_score(y_train, y_train_prediccion_rl)
-#0.5489941596365996
+#: 0.28163530175210905
+recall_score(y_train, y_train_prediccion_lr)
+#0.0.3692407527579494
 recall_score(y_train, y_train_prediccion_nv)
- 0.5489941596365996
+ # 0.5171966255678131
+ 
+param_grid ={'n_estimators': [1, 10, 100, 1000], 'criterion': ['gini', 'entropy'], 'max_depth':[None,2,5,50,200],'min_samples_split':[0.1,2,3,4]}
+cuadricula = GridSearchCV(forest_clf, param_grid, return_train_score=True, scoring='recall', cv=3)
 
+cuadricula.fit(X_train, y_train) 
+cuadricula.best_params_
+cuadricula.best_score_
+#Out[22]: 0.6508306722997146
+#{'criterion': 'gini',
+# 'max_depth': 2,
+#'min_samples_split': 2,
+#'n_estimators': 1}
 
 
 

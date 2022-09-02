@@ -8,20 +8,24 @@ from sklearn.model_selection import train_test_split
 #algortimos
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
 from sklearn.naive_bayes import GaussianNB
 #importar matriz de confusion
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import recall_score
 from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
 
 
 shop=pd.read_csv('intention.csv')
 
 
+
 font = {'size': 12}
 plt.rc('font', **font)
+
+
 
 # sumammos filas
 shop.isna().sum()
@@ -94,19 +98,23 @@ corr_k=shop_total.corr(method="kendall")
 corr_s["Revenue"].sort_values(ascending=False)
 corr_k["Revenue"].sort_values(ascending=False)
 
-plt.figure(figsize=(20,10))
-sns.heatmap(corr_s,annot=True,center=1,robust=True)
+#eliminar filas
+nuevo=shop_total.drop(['Month'], axis=1)
+nuevo1=nuevo.drop(['Weekend'], axis=1)
+nuevo2=nuevo1.drop(['Browser'], axis=1)
+nuevo3=nuevo2.drop(['Other'], axis=1)
+nuevo4=nuevo3.drop(['TrafficType'], axis=1)
+nuevo5=nuevo4.drop(['Region'], axis=1)
+nuevo6=nuevo5.drop(['OperatingSystems'], axis=1)
+nuevo7=nuevo6.drop(['SpecialDay'], axis=1)
+nuevo8=nuevo7.drop(['Returning_Visitor'], axis=1)
+nuevo9=nuevo8.drop(['Informational_Duration'], axis=1)
 
-#Grafica de correlaciones
-
-scatter_matrix(shop_numeric, figsize=(14,10))
-plt.show()
+shop_final=nuevo9
 
 #scaling
-
-y = shop_total['Revenue'].copy()
-X = shop_total.drop('Revenue', axis=1)
-
+y = shop_final['Revenue'].copy()
+X = shop_final.drop('Revenue', axis=1)
 
 
 # DIVIDIR EN ENTRENAR Y TESTEO
@@ -134,39 +142,32 @@ y_train_prediccion_lr = cross_val_predict(lr_clf, X_train, y_train, cv=5)
 y_train_prediccion_nv = cross_val_predict(nv_clf, X_train, y_train, cv=5)
 
 
-#calculamos la matriz de confusion para cada modelo
-
-confusion_matrix(y_train, y_train_prediccion_forest)
-confusion_matrix(y_train, y_train_prediccion_knn)
-confusion_matrix(y_train, y_train_prediccion_lr)
-confusion_matrix(y_train, y_train_prediccion_nv)
-
 recall_score(y_train, y_train_prediccion_forest)
-#RESULTADO Out[13]:  0.5710577547047372
+#0.554834523036989
 recall_score(y_train, y_train_prediccion_knn)
-#RESULTADO 0.2809863724853991
+# 0.3108371187540558
 recall_score(y_train, y_train_prediccion_lr)
-#RESULTADAO0. 0.3711875405580792
+#0.36404931862427
 recall_score(y_train, y_train_prediccion_nv)
-#RESULTADO  0.5412070084360805
-
-
+#0.5126541207008436
+ 
 param_grid ={'n_estimators': [1, 10, 100, 1000], 'criterion': ['gini', 'entropy'], 'max_depth':[None,2,5,50,200],'min_samples_split':[0.1,2,3,4]}
-
-cuadricula = GridSearchCV(forest_clf, param_grid, return_train_score=True, scoring='recall', cv=5)
+cuadricula = GridSearchCV(forest_clf, param_grid, return_train_score=True, scoring='recall', cv=3)
 
 cuadricula.fit(X_train, y_train) 
 cuadricula.best_params_
 #{'criterion': 'entropy',
-#'max_depth': 200,
-#'min_samples_split': 4,
-# 'n_estimators': 1000}
+#'max_depth': 2,
+# 'min_samples_split': 3,
+#'n_estimators': 1}
+
 
 cuadricula.best_score_
-#0.5788593283738914
+#0.6450737378104434
 
 
 
-lr_clf.get_params()
+
+
 
 

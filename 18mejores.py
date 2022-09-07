@@ -104,16 +104,8 @@ corr_k["Revenue"].sort_values(ascending=False)
 #eliminar filas
 nuevo=shop_total.drop(['Month'], axis=1)
 nuevo1=nuevo.drop(['Weekend'], axis=1)
-nuevo2=nuevo1.drop(['Browser'], axis=1)
-nuevo3=nuevo2.drop(['Other'], axis=1)
-nuevo4=nuevo3.drop(['TrafficType'], axis=1)
-nuevo5=nuevo4.drop(['Region'], axis=1)
-nuevo6=nuevo5.drop(['OperatingSystems'], axis=1)
-nuevo7=nuevo6.drop(['SpecialDay'], axis=1)
-nuevo8=nuevo7.drop(['Returning_Visitor'], axis=1)
-nuevo9=nuevo8.drop(['Informational_Duration'], axis=1)
 
-shop_final=nuevo9
+shop_final=nuevo1
 
 #scaling
 y = shop_final['Revenue'].copy()

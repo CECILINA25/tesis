@@ -145,7 +145,7 @@ recall_score(y_train, y_train_prediccion_lr)
 #0.36404931862427
 recall_score(y_train, y_train_prediccion_nv)
 #0.5126541207008436
- 
+# CALCULO PARA RANDOM FOREST
 param_grid ={'n_estimators': [1, 10, 100, 1000], 'criterion': ['gini', 'entropy'], 'max_depth':[None,2,5,50,200],'min_samples_split':[0.1,2,3,4]}
 cuadricula = GridSearchCV(forest_clf, param_grid, return_train_score=True, scoring='recall', cv=3)
 
@@ -156,7 +156,6 @@ cuadricula.best_params_
 # 'min_samples_split': 3,
 #'n_estimators': 1}
 
-
 cuadricula.best_score_
 #0.6450737378104434
 
@@ -165,8 +164,49 @@ x_test_escalado=scaler.transform(X_test)
 y_test_predicciones=mejor_modelo.predict(x_test_escalado)
 recall_score(y_test,y_test_predicciones)
 
+#CALCULO PARA KNN
+
+param_gridknn={'n_neighbors':[1,3,5,7,11], 
+               'weights':['uniform', 'distance'],
+               'algorithm':['auto', 'ball_tree', 'kd_tree', 'brute'],
+               'leaf_size':[40,50, 60, 70],
+                'metric': ['euclidean', 'manhattan']
+               
+               }
 
 
+cuadriculaknn = GridSearchCV(knn_clf, param_gridknn, return_train_score=True, scoring='recall', cv=3)
+
+cuadriculaknn.fit(X_train, y_train) 
+
+cuadriculaknn.best_params_
+cuadriculaknn.best_score_
+
+# CALCULO PARA REGRECION LOGISTICA
+param_gridrl={'penalty':['l1', 'l2', 'elasticnet', 'none'], 
+               'dual':[ True, False],
+               'C': [0.01, 0.1, 1, 2, 10, 100],
+               'solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
+               'max_iter':[10,50,100, 200],
+               'multi_class': ['auto', 'ovr', 'multinomial']
+               
+               }
+
+cuadriculalr= GridSearchCV(lr_clf, param_gridrl, return_train_score=True, scoring='recall', cv=3)
+
+cuadriculalr.fit(X_train, y_train) 
+
+cuadriculalr.best_params_
+#{'C': 0.01,
+# 'dual': True,
+ #'max_iter': 100,
+ #'multi_class': 'auto',
+ #'penalty': 'l2',
+# 'solver': 'liblinear'}
+
+cuadriculalr.best_score_
+
+lr_clf.get_params().keys()
 
 
 

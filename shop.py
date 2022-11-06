@@ -56,6 +56,82 @@ plt.show()
 shop['Revenue'].value_counts(normalize=True)
 
 
+# ANALISIS GRAFICO DE VARIABLES
+columnas=['Administrative', 'Informational', 'SpecialDay','OperatingSystems', 'Browser', 'Region',
+             'TrafficType', 'Weekend', 'VisitorType']
+
+df=shop[columnas]
+for i, col in enumerate(df.columns):
+    plt.figure(i)
+    sns.countplot(x=col, data=df)
+
+# analisis variable week
+shop['Weekend'].value_counts()
+plt.rcParams['figure.figsize'] = (18, 7)
+size = [9462, 3868 ]
+colors = ['pink', 'magenta', 'yelow']
+labels = "False", "True"
+explode = [0, 0]
+plt.subplot(1, 2, 1)
+plt.pie(size, colors = colors, labels = labels, explode = explode, shadow = True, autopct = '%.2f%%')
+plt.title('Weekend', fontsize = 30)
+plt.axis('off')
+plt.legend()
+
+#ANALISIS DE VARIABLE REGION
+print(shop['Region'].unique())
+shop['Region'].value_counts()
+
+
+size = [4780, 2403, 1182, 1136 ,805, 761, 511, 434,318]
+colors = ['pink','orange', 'yellow', 'pink', 'crimson', 'lightgreen', 'cyan', 'blue','magenta']
+labels = "1", "3","4","2","6","7","9","8","5"
+
+plt.subplot(1, 2, 2)
+plt.pie(size, colors = colors, labels = labels, shadow = True, autopct = '%.2f%%', startangle = 90)
+plt.title('Region', fontsize = 30)
+plt.axis('off')
+plt.legend()
+plt.show()
+
+#analissi traffic type
+df2 = pd.crosstab(shop['TrafficType'], shop['Revenue'])
+df2.div(df2.sum(1).astype(float), axis = 0).plot(kind = 'bar', stacked = True, figsize = (15, 5), color = ['blue', 'red'])
+plt.title('Traffic Type vs Revenue', fontsize = 30)
+plt.show()
+
+#revenue
+df3= pd.crosstab(shop['VisitorType'], shop['Revenue'])
+df3.div(df3.sum(1).astype(float), axis = 0).plot(kind = 'bar', stacked = True, figsize = (15, 5), color = ['blue', 'red'])
+plt.title('Visitor Type vs Revenue', fontsize = 30)
+plt.show()
+
+
+df4= pd.crosstab(shop['Region'], shop['Revenue'])
+df4.div(df4.sum(1).astype(float), axis = 0).plot(kind = 'bar', stacked = True, figsize = (15, 5), color = ['blue', 'red'])
+plt.title('Region vs Revenue', fontsize = 30)
+plt.show()
+
+
+
+
+# VARIABLE SPECIALDAY
+shop['SpecialDay'].value_counts()
+size = [11079, 351, 325, 243 ,178, 154]
+colors = ['pink','orange', 'yellow', 'crimson', 'lightgreen', 'cyan','magenta']
+labels = "0.0", "0.6","0.8","0.4","0.2","1.0"
+
+plt.subplot(1, 2, 2)
+plt.pie(size, colors = colors, labels = labels, shadow = True, autopct = '%.2f%%', startangle = 90)
+plt.title('SpecialDay', fontsize = 30)
+plt.axis('off')
+plt.legend()
+plt.show()
+
+
+
+
+
 #CONVERTIR A NUMERICOS VARIABLES BOOLEANAS
 shop_numeric=shop.copy()
 #CONTAR VALORES FALSOS Y VERDADEROS
